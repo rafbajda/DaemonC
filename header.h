@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -21,6 +20,18 @@
 #include <unistd.h>
 
 #define BUFSIZE 1024
+
+// zmienne pomocniczne
+int i, j;
+int isNum = 0;
+// zmienne do ścieżek
+char src[300]; // ścieżka źródłowa
+char dst[300]; // ścieżka docelowa
+// parametry programu
+int recursion = 0; // parametr -R - rekurencja
+int sleeplength = 5; //długość drzemki demona w sekundach
+int size = 100000; // maxsize
+
 
  
 int mode(struct stat info); //funkcja zwraca wartosc ktora reprezentuje rodzaj: 1-folder, 0-plik, - 1 inne

@@ -1,6 +1,5 @@
  #include"header.h"
  // zmienne pomocniczne
-int i, j;
 //---------------------------------------------
 
 
@@ -23,23 +22,6 @@ void fsleep(int sig)
 void fsig(int sig)
 {
     syslog(LOG_INFO,"obudzenie sygnałem SIGUSR1");
-}
-
- 
-
- 
-//Funcja sprawdza czy podana sciazka jest katalogiem
-//tworzy strukture stat od sciezki i wywoluje funkcje mode
-
-int if_Dir(char* path)
-{
-    struct stat info;
-    if((stat(path, &info)) < 0) //jeśli nie udało się pobranie informacji o ścieżce, zwracana jest wartość -1
-    {
-        syslog(LOG_ERR,"nieudane pobranie informacji o pliku\n");
-        return -1;
-    }
-    else return mode(info);
 }
  
 //FUNKCJA KOPIUJĄCA PLIKI
@@ -114,8 +96,8 @@ int synchronize(char *src, char *dst, int recursion, long int size)
     DIR *catSrc;
     DIR *catDst;
     struct dirent *dit;
-    char srcpath[30];
-    char dstpath[30];
+    char srcpath[300];
+    char dstpath[300];
     struct stat srcfileinfo;
     struct stat dstfileinfo;
 
@@ -197,8 +179,8 @@ void deleteExtras(char *src, char *dst, int recursion)
     DIR *catSrc;
     DIR *catDst;
     struct dirent *dit;
-    char srcpath[30];
-    char dstpath[30];
+    char srcpath[300];
+    char dstpath[300];
     struct stat srcfileinfo;
     struct stat dstfileinfo;
     dit=malloc(sizeof(struct dirent));
