@@ -1,8 +1,5 @@
  #include"header.h"
- // zmienne pomocniczne
-//---------------------------------------------
-
-
+ 
 // funkcja sprawdza co opisuje struktura podana jako argument,
 // zwraca 1 jesli jest folderem, 0 jesli regular file, -1 jesli cos innego 
 int mode(struct stat info)

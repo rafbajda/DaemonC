@@ -9,9 +9,9 @@ int main(int argc,char* argv[])
     //deklaracja obiektów SIGACTION
     struct sigaction sleeper; // sigaction odpowiadajace za budzenie demona
     struct sigaction listener; // sigaction odpowiadajcy za nasluchiwanie sygnału SIGUSR1
-    //funkcja
+    //funkcja demonizująca
     openlog("demon", LOG_PID, LOG_LOCAL1);
-    daemon(1, 0); // demonizacja
+    daemon(1, 0);
     //pobieranie argumentów
     if (( argc < 3 ) || ( argc > 6 )) //sprawdzam liczbę parametrów funkcji
     {
@@ -33,8 +33,8 @@ int main(int argc,char* argv[])
         }
         
     }
-
-    while (dst && !dst[0]) { // to samo co przy ścieżce źródłowej, tylko że szukam ścieżki docelowej
+    // identyczny algorytm jak w przypadku ścieżki źródłowej
+    while (dst && !dst[0]) { 
         for(i;i<argc;i++) { // samo i, a nie i=1 bo szukam od miejsca w którym znalazłem ścieżkę źródłową
             if (argv[i][0] != '-') {
                 strcpy(dst, argv[i]);
@@ -44,23 +44,17 @@ int main(int argc,char* argv[])
             }
         }
     } 
-    
+    //definiowanie struktur STAT
     stat(src,&srcfileinfo);
     stat(dst,&dstfileinfo); 
-
-    syslog(LOG_ERR,"out1 - '%d'\n", mode(srcfileinfo));
-
-    syslog(LOG_ERR,"out2 - '%d'\n", mode(dstfileinfo));
-
-
-    if (access(src,0) == -1 || access(dst,0) == -1 || mode(srcfileinfo) != 1 || mode(dstfileinfo) != 1) //czy jest dostęp i czy jest katalogiem
+    //sprawdzam czy jest dostęp i czy ścieżka jest katalogiem
+    if (access(src,0) == -1 || access(dst,0) == -1 || mode(srcfileinfo) != 1 || mode(dstfileinfo) != 1)
     {
         syslog(LOG_ERR,"Nieprawidłowe argumenty - brak ścieżki lub nie jest katalogiem \n");
         syslog(LOG_ERR,"Sciezka1 - '%s'\n",src);
         syslog(LOG_ERR,"Sciezka2 - '%s'\n",dst);
         exit(1);
     }
-
     // sprawdzam parametr rekurencji '-R'
     for(i=1;i<argc;i++) {
         if (argv[i][0] == '-' && argv[i][1] == 'R') {
@@ -100,20 +94,13 @@ int main(int argc,char* argv[])
             break;
         }
     }
-
-
-    // -------------------------------------------
-    // KONFIGURACJA SYGNAŁÓW 
-    // -------------------------------------------
-    
+    //konfiguracja sygnałów
     sleeper.sa_handler = &fsleep; // ustawiam handler
     sigaction(SIGALRM, &sleeper, NULL);  // ustawiam akcję w przypadku sygnału alarmu (funckja alarmu wywołana jest niżej)
     listener.sa_handler = &fsig;  // ustawiam handler
     sigaction(SIGUSR1, &listener, NULL); // ustawiam akcję w przypadku sygnału SIGUSR1, budzę demona
 
-    // -------------------------------------------
-    // GŁÓWNA PĘTLA PROGRAMU
-    // -------------------------------------------
+     //główna pętla programu
     while(1 == 1)
     {
         syslog(LOG_INFO,"demon śpi");
